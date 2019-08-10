@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
     Text,
+    ActivityIndicator
 } from 'react-native';
 
 //import firebase database 
@@ -18,14 +19,10 @@ export default class Home extends Component {
         }
         this.listenFirebaseDB = this.listenFirebaseDB.bind(this);
         this.updateState = this.updateState.bind(this);
+        this.displayValue = this.displayValue.bind(this);
     }
 
     componentDidMount() {
-        var email = "test_test.com";
-        var fname = "Test";
-        var lname = "Test";
-        var gender = "Male";
-
         this.listenFirebaseDB();
     }
 
@@ -56,34 +53,69 @@ export default class Home extends Component {
         })
 
     }
+
+
+    //show loader till the values are getting fetched from firebase
+    displayValue(type) {
+        console.log("eval: "+eval("this.state."+type))
+        if (eval("this.state." + type) != 0) {
+            return <Text style={styles.maleValue}>{eval("this.state."+type)}</Text>
+        } else {
+            return <ActivityIndicator size="small" color="green" />
+        }
+    }
     //render view
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <Text style={styles.header}>MALE: <Text style={styles.maleValue}>{this.state.male}</Text></Text>
-                <Text style={styles.header}>FEMALE: <Text style={styles.femaleValue}>{this.state.female}</Text></Text>
+                <View style={styles.header}>
+                    <Text style={styles.maleHeader}>MALE:</Text>
+                   {this.displayValue("male")}
+                </View>
+                <View style={styles.header}>
+                    <Text style={styles.femaleHeader}>FEMALE:</Text>
+                    {this.displayValue("female")}
+                </View>
+
             </SafeAreaView>
         )
     }
 }
 
+//common style sheet
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white'
     },
     header: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: "flex-start",
+        alignItems: 'center'
+    },
+    maleHeader: {
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 24,
         color: 'black',
+        margin: 16
+    },
+    femaleHeader: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        color: 'red',
         margin: 16
     },
     maleValue: {
         color: 'green',
         fontWeight: '900',
+        fontSize: 18,
+        margin: 16
     },
     femaleValue: {
-        color: 'orange',
+        color: 'green',
         fontWeight: '900',
+        fontSize: 18,
+        margin: 16
     }
 })
